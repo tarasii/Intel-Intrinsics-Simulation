@@ -6,10 +6,10 @@
 
 int8_t Saturate8(int16_t a)
 {
-	int16_t res;
+	int8_t res;
 	if (a > INT8_MAX) res = INT8_MAX;
 	else if (a < INT8_MIN) res = INT8_MIN;
-	else res = (int16_t)a;
+	else res = (int8_t)a;
 	return res;
 }
 int16_t Saturate16(int32_t a)
@@ -96,10 +96,10 @@ __m128i _mm_sign_epi16_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput(CPI)
-		Skylake			1	0.5
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -122,9 +122,9 @@ __m64 _mm_sign_pi16_(__m64 a, __m64 b)
 		#include <tmmintrin.h>
 	Instruction: psignw mm, mm
 	CPUID Flags: SSSE3
-	Description
+	Description:
 		Negate packed 16-bit integers in a when the corresponding signed 16-bit integer in b is negative, and store the results in dst. Element in dst are zeroed out when the corresponding element in b is zero.
-	Operation
+	Operation:
 		FOR j := 0 to 3
 			i := j*16
 			IF b[i+15:i] < 0
@@ -135,7 +135,7 @@ __m64 _mm_sign_pi16_(__m64 a, __m64 b)
 				dst[i+15:i] := a[i+15:i]
 			FI
 		ENDFOR
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
 		Icelake			1		-
 		Skylake			1		0.5
@@ -209,10 +209,10 @@ __m128i _mm_mullo_epi16_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			5	0.5
-		Broadwell		5	1
-		Haswell			5	1
-		Ivy Bridge		5	1
+		Skylake			5		0.5
+		Broadwell		5		1
+		Haswell			5		1
+		Ivy Bridge		5		1
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -242,10 +242,10 @@ __m128i _mm_mulhi_epi16_(__m128i a, __m128i b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			5	0.5
-		Broadwell		5	1
-		Haswell			5	1
-		Ivy Bridge		5	1
+		Skylake			5		0.5
+		Broadwell		5		1
+		Haswell			5		1
+		Ivy Bridge		5		1
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -276,10 +276,10 @@ __m128i _mm_mulhrs_epi16_(__m128i a, __m128i b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			5	0.5
-		Broadwell		5	1
-		Haswell			5	1
-		Ivy Bridge		5	1	
+		Skylake			5		0.5
+		Broadwell		5		1
+		Haswell			5		1
+		Ivy Bridge		5		1	
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -306,10 +306,10 @@ __m128i _mm_setzero_si128_()
 		dst[MAX:0] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.33
-		Haswell			1	0.33
-		Ivy Bridge		1	0.33
+		Skylake			1		0.33
+		Broadwell		1		0.33
+		Haswell			1		0.33
+		Ivy Bridge		1		0.33
 	*/
 	__m128i res = {0};
 	return res;
@@ -329,9 +329,8 @@ __m64 _mm_setzero_si64_()
 		dst[MAX:0] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	0.5
-
+		Icelake			1		0.5
+		Skylake			1		0.5
 	*/
 	__m64 res = { 0 };
 	return res;
@@ -351,9 +350,9 @@ __m128 _mm_setzero_ps_()
 		dst[MAX:0] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		1
 	*/
 	__m128 res = { 0 };
 	return res;
@@ -373,8 +372,8 @@ __m256i _mm256_setzero_si256_(void)
 		dst[MAX:0] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake	1	0.33
-		Skylake	1	0.33
+		Icelake			1		0.33
+		Skylake			1		0.33
 
 	*/
 	__m256i res = { 0 };
@@ -454,6 +453,92 @@ __m256i _mm256_set1_epi8_(char a)
 	return res;
 }
 
+__m256i _mm256_abs_epi8_(__m256i a)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_abs_epi8 (__m256i a)
+		#include <immintrin.h>
+	Instruction: vpabsb ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Compute the absolute value of packed signed 8-bit integers in a, and store the unsigned results in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[i+7:i] := ABS(a[i+7:i])
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+	*/
+	__m256i res = { 0 };
+	for (int i = 0; i <= 31; i++)
+	{
+		res.m256i_i8[i] = Saturate8(abs(a.m256i_i8[i]));
+	}
+	return res;
+}
+
+int _mm256_movemask_epi8_(__m256i a)
+{
+	/*
+	Synopsis:
+		int _mm256_movemask_epi8 (__m256i a)
+		#include <immintrin.h>
+	Instruction: vpmovmskb r32, ymm
+	CPUID Flags: AVX2
+	Description:
+		Create mask from the most significant bit of each 8-bit element in a, and store the result in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[j] := a[i+7]
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			2		1
+	*/
+	int res = 0;
+	for (int i = 0; i <= 31; i++)
+	{
+		res = res | ((a.m256i_u8[i] >> 7) << i);
+	}
+	return res;
+}
+
+__m256i _mm256_cvtepi8_epi16_(__m128i a)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_cvtepi8_epi16 (__m128i a)
+		#include <immintrin.h>
+	Instruction: vpmovsxbw ymm, xmm
+	CPUID Flags: AVX2
+	Description:
+		Sign extend packed 8-bit integers in a to packed 16-bit integers, and store the results in dst.
+	Operation:
+		FOR j := 0 to 15
+			i := j*8
+			l := j*16
+			dst[l+15:l] := SignExtend16(a[i+7:i])
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			3		1
+		Skylake			3		1
+	*/
+	__m256i res = { 0 };
+	for (int i = 0; i <= 15; i++)
+	{
+		res.m256i_i16[i] = SignExtend16(a.m128i_i8[i]);
+	}
+	return res;
+}
+
 __m256i _mm256_set1_epi32_(int a)
 {
 	/*
@@ -504,6 +589,51 @@ __m256i _mm256_set1_epi64x_(long long a)
 	return res;
 }
 
+long long select4(__m256i src, int ctl){
+	long long res = 0;
+	ctl = ctl & 3;
+	res = src.m256i_i64[ctl];
+	return res;
+}
+
+__m256i _mm256_permute4x64_epi64_(__m256i a, const int imm8)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_permute4x64_epi64 (__m256i a, const int imm8)
+		#include <immintrin.h>
+	Instruction: vpermq ymm, ymm, imm8
+	CPUID Flags: AVX2
+	Description:
+		Shuffle 64-bit integers in a across lanes using the control in imm8, and store the results in dst.
+	Operation:
+		DEFINE SELECT4(src, control) {
+			CASE(control[1:0]) OF
+				0:	tmp[63:0] := src[63:0]
+				1:	tmp[63:0] := src[127:64]
+				2:	tmp[63:0] := src[191:128]
+				3:	tmp[63:0] := src[255:192]
+			ESAC
+			RETURN tmp[63:0]
+		}
+		dst[63:0] := SELECT4(a[255:0], imm8[1:0])
+		dst[127:64] := SELECT4(a[255:0], imm8[3:2])
+		dst[191:128] := SELECT4(a[255:0], imm8[5:4])
+		dst[255:192] := SELECT4(a[255:0], imm8[7:6])
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			3		1
+		Skylake			3		1
+	*/
+	__m256i res = { 0 };
+	res.m256i_i64[0] = select4(a, imm8);
+	res.m256i_i64[1] = select4(a, imm8 >> 2);
+	res.m256i_i64[2] = select4(a, imm8 >> 4);
+	res.m256i_i64[3] = select4(a, imm8 >> 6);
+	return res;
+}
+
 __m128i _mm_srai_epi16_(__m128i a, int imm8)
 {
 	/*
@@ -525,7 +655,7 @@ __m128i _mm_srai_epi16_(__m128i a, int imm8)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
+		Skylake			1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -541,14 +671,14 @@ __m128i _mm_srai_epi16_(__m128i a, int imm8)
 __m256i _mm256_srai_epi16_(__m256i a, int imm8)
 {
 	/*
-	Synopsis
-	__m256i _mm256_srai_epi16 (__m256i a, int imm8)
-	#include <immintrin.h>
+	Synopsis:
+		__m256i _mm256_srai_epi16 (__m256i a, int imm8)
+		#include <immintrin.h>
 	Instruction: vpsraw ymm, ymm, imm8
 	CPUID Flags: AVX2
-	Description
-	Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst.
-	Operation
+	Description:
+		Shift packed 16-bit integers in a right by imm8 while shifting in sign bits, and store the results in dst.
+	Operation:
 		FOR j := 0 to 15
 			i := j*16
 			IF imm8[7:0] > 15
@@ -558,13 +688,12 @@ __m256i _mm256_srai_epi16_(__m256i a, int imm8)
 			FI
 		ENDFOR
 		dst[MAX:256] := 0
-	Performance
-	Architecture	Latency	Throughput (CPI)
-	Icelake			1	0.5
-	Skylake			1	0.5
-	Broadwell		1	1
-	Haswell			1	1
-
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+		Broadwell		1		1
+		Haswell			1		1
 	*/
 	__m256i res;
 	for (int i = 0; i <= 16; i++)
@@ -597,7 +726,7 @@ __m128i _mm_srai_epi32_(__m128i a, int imm8){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
+		Skylake			1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -614,12 +743,12 @@ __m128i _mm_sra_epi32_(__m128i a, __m128i count)
 {
 	/*
 	Synopsis:
-	__m128i _mm_sra_epi32 (__m128i a, __m128i count)
-	#include <emmintrin.h>
+		__m128i _mm_sra_epi32 (__m128i a, __m128i count)
+		#include <emmintrin.h>
 	Instruction: psrad xmm, xmm
 	CPUID Flags: SSE2
 	Description:
-	Shift packed 32-bit integers in a right by count while shifting in sign bits, and store the results in dst.
+		Shift packed 32-bit integers in a right by count while shifting in sign bits, and store the results in dst.
 	Operation:
 		FOR j := 0 to 3
 			i := j*32
@@ -631,11 +760,10 @@ __m128i _mm_sra_epi32_(__m128i a, __m128i count)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			2	1
-		Broadwell		2	1
-		Haswell			2	1
-		Ivy Bridge		2	1
-
+		Skylake			2		1
+		Broadwell		2		1
+		Haswell			2		1
+		Ivy Bridge		2		1
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -668,10 +796,10 @@ __m128i _mm_packs_epi32_(__m128i a, __m128i b){
 		dst[127:112] := Saturate16(b[127:96])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i16[0] = Saturate16(a.m128i_i32[0]);
@@ -687,14 +815,14 @@ __m128i _mm_packs_epi32_(__m128i a, __m128i b){
 
 __m128i _mm_packs_epi16_(__m128i a, __m128i b){
 	/*
-	Synopsis
+	Synopsis:
 		__m128i _mm_packs_epi16 (__m128i a, __m128i b)
 		#include <emmintrin.h>
 	Instruction: packsswb xmm, xmm
 	CPUID Flags: SSE2
-	Description
+	Description:
 		Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst.
-	Operation
+	Operation:
 		dst[7:0] := Saturate8(a[15:0])
 		dst[15:8] := Saturate8(a[31:16])
 		dst[23:16] := Saturate8(a[47:32])
@@ -711,14 +839,12 @@ __m128i _mm_packs_epi16_(__m128i a, __m128i b){
 		dst[111:104] := Saturate8(b[95:80])
 		dst[119:112] := Saturate8(b[111:96])
 		dst[127:120] := Saturate8(b[127:112])
-
-	Performance
-	Architecture	Latency	Throughput (CPI)
-	Skylake	1	1
-	Broadwell	1	1
-	Haswell	1	1
-	Ivy Bridge	1	0.5
-
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i8[0] = Saturate8(a.m128i_i16[0]);
@@ -764,10 +890,10 @@ __m128i _mm_unpacklo_epi16_(__m128i a, __m128i b){
 		dst[127:0] := INTERLEAVE_WORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i16[0] = a.m128i_i16[0];
@@ -805,10 +931,10 @@ __m128i _mm_unpackhi_epi16_(__m128i a, __m128i b){
 		dst[127:0] := INTERLEAVE_HIGH_WORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i16[0] = a.m128i_i16[4];
@@ -838,10 +964,10 @@ __m128i _mm_adds_epi16_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -869,10 +995,10 @@ __m128i _mm_add_epi16_(__m128i a, __m128i b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -897,8 +1023,8 @@ __m256i _mm256_and_si256_(__m256i a, __m256i b)
 		dst[MAX:256] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.33
-		Skylake			1	0.33
+		Icelake			1		0.33
+		Skylake			1		0.33
 	*/
 
 	__m256i res;
@@ -924,8 +1050,8 @@ __m256i _mm256_andnot_si256_(__m256i a, __m256i b)
 		dst[MAX:256] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.33
-		Skylake			1	0.33
+		Icelake			1		0.33
+		Skylake			1		0.33
 	*/
 
 	__m256i res;
@@ -951,10 +1077,10 @@ __m256i _mm256_or_si256_(__m256i a, __m256i b)
 		dst[MAX:256] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.33
-		Skylake			1	0.33
-		Broadwell		1	0.33
-		Haswell			1	0.33
+		Icelake			1		0.33
+		Skylake			1		0.33
+		Broadwell		1		0.33
+		Haswell			1		0.33
 	*/
 
 	__m256i res;
@@ -1000,14 +1126,14 @@ __m128i _mm_setr_epi16_(short e7, short e6, short e5, short e4, short e3, short 
 __m128i _mm_set_epi16_(short e7, short e6, short e5, short e4, short e3, short e2, short e1, short e0)
 {
 	/*
-	Synopsis
+	Synopsis:
 		__m128i _mm_set_epi16 (short e7, short e6, short e5, short e4, short e3, short e2, short e1, short e0)
 		#include <emmintrin.h>
 	Instruction: Sequence
 	CPUID Flags: SSE2
-	Description
+	Description:
 		Set packed 16-bit integers in dst with the supplied values.
-	Operation
+	Operation:
 		dst[15:0] := e0
 		dst[31:16] := e1
 		dst[47:32] := e2
@@ -1032,18 +1158,18 @@ __m128i _mm_set_epi16_(short e7, short e6, short e5, short e4, short e3, short e
 __m128i _mm_setr_epi32_(int e3, int e2, int e1, int e0)
 {
 	/*
-	Synopsis
-	__m128i _mm_setr_epi32 (int e3, int e2, int e1, int e0)
-	#include <emmintrin.h>
+	Synopsis:
+		__m128i _mm_setr_epi32 (int e3, int e2, int e1, int e0)
+		#include <emmintrin.h>
 	Instruction: Sequence
 	CPUID Flags: SSE2
-	Description
-	Set packed 32-bit integers in dst with the supplied values in reverse order.
-	Operation
-	dst[31:0] := e3
-	dst[63:32] := e2
-	dst[95:64] := e1
-	dst[127:96] := e0
+	Description:
+		Set packed 32-bit integers in dst with the supplied values in reverse order.
+	Operation:
+		dst[31:0] := e3
+		dst[63:32] := e2
+		dst[95:64] := e1
+		dst[127:96] := e0
 	*/
 	__m128i res;
 	res.m128i_i32[0] = e3;
@@ -1096,10 +1222,10 @@ __m128i _mm_shufflelo_epi16_(__m128i a, int imm8){
 		dst[127:64] := a[127:64]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i16[0] = a.m128i_i16[(imm8 & 0x3)];
@@ -1127,10 +1253,10 @@ __m128i _mm_shufflehi_epi16_(__m128i a, int imm8){
 		dst[127:112] := (a >> (imm8[7:6] * 16))[79:64]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i64[0] = a.m128i_i64[0]; 
@@ -1157,10 +1283,10 @@ __m128i _mm_add_epi32_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -1190,10 +1316,10 @@ __m128i _mm_unpacklo_epi32_(__m128i a, __m128i b){
 		dst[127:0] := INTERLEAVE_DWORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1226,10 +1352,10 @@ __m128i _mm_unpackhi_epi32_(__m128i a, __m128i b){
 	dst[127:0] := INTERLEAVE_HIGH_DWORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1258,10 +1384,10 @@ __m128i _mm_sub_epi32_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -1287,10 +1413,10 @@ __m128i _mm_sub_epi16_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1316,10 +1442,10 @@ __m128i _mm_subs_epi16_(__m128i a, __m128i b){
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1351,10 +1477,10 @@ __m128i _mm_shuffle_epi8_(__m128i a, __m128i b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 15; i++)
@@ -1373,14 +1499,14 @@ __m128i _mm_shuffle_epi8_(__m128i a, __m128i b)
 __m256i _mm256_shuffle_epi8_(__m256i a, __m256i b)
 {
 	/*
-	Synopsis
+	Synopsis:
 		__m256i _mm256_shuffle_epi8 (__m256i a, __m256i b)
 		#include <immintrin.h>
 	Instruction: vpshufb ymm, ymm, ymm
 	CPUID Flags: AVX2
-	Description
+	Description:
 		Shuffle 8-bit integers in a within 128-bit lanes according to shuffle control mask in the corresponding 8-bit element of b, and store the results in dst.
-	Operation
+	Operation:
 		FOR j := 0 to 15
 			i := j*8
 			IF b[i+7] == 1
@@ -1397,29 +1523,29 @@ __m256i _mm256_shuffle_epi8_(__m256i a, __m256i b)
 			FI
 		ENDFOR
 		dst[MAX:256] := 0
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
+		Icelake			1		0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
 	*/
-	__m256i res;
+	__m256i res = {0};
 	for (int i = 0; i <= 15; i++)
 	{
 		if (b.m256i_i8[i] & 0x80)
 			res.m256i_i8[i] = 0;
 		else
 		{
-			int index = b.m256i_i8[i] & 0x7; //chekit
+			int index = b.m256i_i8[i] & 0xf; //chekit
 			res.m256i_i8[i] = a.m256i_i8[index];
 		}
 		if (b.m256i_i8[i+16] & 0x80)
 			res.m256i_i8[i+16] = 0;
 		else
 		{
-			int index = b.m256i_i8[i+16] & 0x7; //chekit
-			res.m256i_i8[i+16] = a.m256i_i8[index];
+			int index = b.m256i_i8[i+16] & 0xf; //chekit
+			res.m256i_i8[i+16] = a.m256i_i8[index+16];
 		}
 	}
 	return res;
@@ -1490,10 +1616,10 @@ __m128i _mm_unpacklo_epi64_(__m128i a, __m128i b){
 		dst[127:0] := INTERLEAVE_QWORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i64[0] = a.m128i_i64[0];
@@ -1519,10 +1645,10 @@ __m128i _mm_unpackhi_epi64_(__m128i a, __m128i b){
 		dst[127:0] := INTERLEAVE_HIGH_QWORDS(a[127:0], b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	res.m128i_i64[0] = a.m128i_i64[1];
@@ -1547,10 +1673,10 @@ __m128i _mm_abs_epi16_(__m128i a)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1606,8 +1732,8 @@ __m64 _mm_unpacklo_pi32_(__m64 a, __m64 b)
 		dst[63:32] := b[31:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	1
-		Skylake			1	1
+		Icelake			1		1
+		Skylake			1		1
 	*/
 	__m64 res;
 	res.m64_i32[0] = a.m64_i32[0];
@@ -1630,8 +1756,8 @@ __m64 _mm_unpackhi_pi32_(__m64 a, __m64 b)
 		dst[63:32] := b[63:32]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	1
-		Skylake			1	1
+		Icelake			1		1
+		Skylake			1		1
 	*/
 	__m64 res;
 	res.m64_i32[0] = a.m64_i32[1];
@@ -1654,7 +1780,7 @@ int _mm_extract_epi16_(__m128i a, int imm8)
 		dst[31:16] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			3	1
+		Skylake			3		1
 	*/
 	int res;
 	res = a.m128i_i16[imm8 & 0x3];
@@ -1675,7 +1801,7 @@ int _mm_extract_epi32_(__m128i a, int imm8)
 		dst[31:0] := (a[127:0] >> (imm8[1:0] * 32))[31:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			3	1
+		Skylake			3		1
 	*/
 	int res;
 	res = a.m128i_i32[imm8 & 0x3];
@@ -1696,7 +1822,7 @@ __int64 _mm_extract_epi64_(__m128i a, const int imm8)
 		dst[63:0] := (a[127:0] >> (imm8[0] * 64))[63:0]
 	Performance
 		Architecture	Latency	Throughput (CPI)
-		Skylake	3	1
+		Skylake			3		1
 	*/
 	__int64 res;
 	res = a.m128i_i64[imm8];
@@ -1744,10 +1870,10 @@ __m128 _mm_rcp_ps_(__m128 a)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			4	1
-		Broadwell		5	1
-		Haswell			5	1
-		Ivy Bridge		5	1
+		Skylake			4		1
+		Broadwell		5		1
+		Haswell			5		1
+		Ivy Bridge		5		1
 	*/
 	__m128 res;
 	for (int i=0; i <= 3; i++)
@@ -1774,10 +1900,10 @@ __m128 _mm_mul_ps_(__m128 a, __m128 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			4	0.5
-		Broadwell		3	0.5
-		Haswell			5	0.5
-		Ivy Bridge		5	1
+		Skylake			4		0.5
+		Broadwell		3		0.5
+		Haswell			5		0.5
+		Ivy Bridge		5		1
 	*/
 	__m128 res;
 	for (int i=0; i <= 3; i++)
@@ -1804,10 +1930,10 @@ __m128 _mm_add_ps_(__m128 a, __m128 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			4	0.5
-		Broadwell		3	1
-		Haswell			3	1
-		Ivy Bridge		3	1
+		Skylake			4		0.5
+		Broadwell		3		1
+		Haswell			3		1
+		Ivy Bridge		3		1
 	*/
 	__m128 res;
 	for (int i=0; i <= 3; i++)
@@ -1834,10 +1960,10 @@ __m128 _mm_sub_ps_(__m128 a, __m128 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			4	0.5
-		Broadwell		3	1
-		Haswell			3	1
-		Ivy Bridge		3	1
+		Skylake			4		0.5
+		Broadwell		3		1
+		Haswell			3		1
+		Ivy Bridge		3		1
 	*/
 	__m128 res;
 	for (int i=0; i <= 3; i++)
@@ -1885,7 +2011,7 @@ __m128 _mm_dp_ps(__m128 a, __m128 b, const int imm8)
 
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			11	1.5
+		Skylake			11		1.5
 	*/
 	__m128 res;
 	__m128 tmp;
@@ -1926,10 +2052,10 @@ __m128i _mm_cmpeq_epi16_(__m128i a, __m128i b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.5
-		Broadwell		1	0.5
-		Haswell			1	0.5
-		Ivy Bridge		1	0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 7; i++)
@@ -1970,31 +2096,191 @@ __m64 _mm_cmpeq_pi16_(__m64 a, __m64 b)
 __m256i _mm256_cmpeq_epi8_(__m256i a, __m256i b)
 {
 	/*
-	Synopsis
+	Synopsis:
 		__m256i _mm256_cmpeq_epi8 (__m256i a, __m256i b)
 		#include <immintrin.h>
 	Instruction: vpcmpeqb ymm, ymm, ymm
 	CPUID Flags: AVX2
-	Description
+	Description:
 		Compare packed 8-bit integers in a and b for equality, and store the results in dst.
-	Operation
+	Operation:
 		FOR j := 0 to 31
 			i := j*8
 			dst[i+7:i] := ( a[i+7:i] == b[i+7:i] ) ? 0xFF : 0
 		ENDFOR
 		dst[MAX:256] := 0
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	0.5
-		Broadwel		l	1	0.5
-		Haswell			1	0.5
+		Icelake			1		0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
 
 	*/
 	__m256i res;
 	for (int i = 0; i <= 31; i++)
 	{
 		res.m256i_i8[i] = (a.m256i_i8[i] == b.m256i_i8[i]) ? 0xff : 0;
+	}
+	return res;
+}
+
+__m256i _mm256_sign_epi8_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_sign_epi8 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpsignb ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Negate packed signed 8-bit integers in a when the corresponding signed 8-bit integer in b is negative, and store the results in dst. Element in dst are zeroed out when the corresponding element in b is zero.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			IF b[i+7:i] < 0
+				dst[i+7:i] := -(a[i+7:i])
+			ELSE IF b[i+7:i] == 0
+				dst[i+7:i] := 0
+			ELSE
+				dst[i+7:i] := a[i+7:i]
+			FI
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+	*/
+	__m256i res;
+	for (int i = 0; i <= 31; i++)
+	{
+		if (b.m256i_i8[i]<0)
+			res.m256i_i8[i] = -a.m256i_i8[i];
+		else if (b.m256i_i8[i]==0)
+			res.m256i_i8[i] = 0;
+		else 
+			res.m256i_i8[i] = a.m256i_i8[i];
+	}
+	return res;
+}
+
+__m256i _mm256_min_epu8_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_min_epu8 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpminub ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Compare packed unsigned 8-bit integers in a and b, and store packed minimum values in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[i+7:i] := MIN(a[i+7:i], b[i+7:i])
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+	*/
+	__m256i res;
+	for (int i = 0; i <= 31; i++)
+	{
+		res.m256i_i8[i] = min(a.m256i_i8[i], b.m256i_i8[i]);
+	}
+	return res;
+}
+
+__m256i _mm256_adds_epi8_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_adds_epi8 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpaddsb ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Add packed 8-bit integers in a and b using saturation, and store the results in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[i+7:i] := Saturate8( a[i+7:i] + b[i+7:i] )
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+	*/
+	__m256i res;
+	for (int i = 0; i <= 31; i++)
+	{
+		res.m256i_i8[i] = Saturate8(a.m256i_i8[i] +  b.m256i_i8[i]);
+	}
+	return res;
+}
+
+__m256i _mm256_subs_epi8_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_subs_epi8 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpsubsb ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Subtract packed signed 8-bit integers in b from packed 8-bit integers in a using saturation, and store the results in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[i+7:i] := Saturate8(a[i+7:i] - b[i+7:i])
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+	*/
+	__m256i res;
+	for (int i = 0; i <= 31; i++)
+	{
+		res.m256i_i8[i] = Saturate8(a.m256i_i8[i] - b.m256i_i8[i]);
+	}
+	return res;
+}
+
+__m256i _mm256_cmpgt_epi8_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_cmpgt_epi8 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpcmpgtb ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Compare packed signed 8-bit integers in a and b for greater-than, and store the results in dst.
+	Operation:
+		FOR j := 0 to 31
+			i := j*8
+			dst[i+7:i] := ( a[i+7:i] > b[i+7:i] ) ? 0xFF : 0
+		ENDFOR
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			1		0.5
+		Skylake			1		0.5
+	*/
+	__m256i res;
+	for (int i = 0; i <= 31; i++)
+	{
+		res.m256i_i8[i] = (a.m256i_i8[i] > b.m256i_i8[i]) ? 0xff : 0;
 	}
 	return res;
 }
@@ -2013,10 +2299,10 @@ int _mm_cvtsi128_si32_(__m128i a)
 		dst[31:0] := a[31:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			2	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	1
+		Skylake			2		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		1
 	*/
 	int res;
 	res = a.m128i_i32[0];
@@ -2038,10 +2324,10 @@ __m128i _mm_cvtsi32_si128_(int a)
 		dst[127:32] := 0
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			2	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	1
+		Skylake			2		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		1
 	*/
 	__m128i res = {0};
 	res.m128i_i32[0] = a;
@@ -2064,10 +2350,10 @@ __m128i _mm_cvttps_epi32_(__m128 a)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			4	0.5
-		Broadwell		3	1
-		Haswell			3	1
-		Ivy Bridge		3	1
+		Skylake			4		0.5
+		Broadwell		3		1
+		Haswell			3		1
+		Ivy Bridge		3		1
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -2094,8 +2380,8 @@ __m64 _m_pmaddwd_(__m64 a, __m64 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			-	1
-		Skylake			4	1
+		Icelake			-		1
+		Skylake			4		1
 	*/
 	__m64 res;
 	for (int i=0; i <= 1; i++)
@@ -2122,8 +2408,8 @@ __m64 _m_paddd_(__m64 a, __m64 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	0.5
+		Icelake			1		0.5
+		Skylake			1		0.5
 	*/
 	__m64 res;
 	for (int i=0; i <= 1; i++)
@@ -2150,8 +2436,8 @@ __m64 _m_paddw_(__m64 a, __m64 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	0.5
+		Icelake			1		0.5
+		Skylake			1		0.5
 	*/
 	__m64 res;
 	for (int i=0; i <= 3; i++)
@@ -2182,7 +2468,7 @@ __m64 _m_psradi_(__m64 a, int imm8)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
+		Skylake			1		1
 	*/
 	__m64 res;
 	for (int i=0; i <= 1; i++)
@@ -2213,7 +2499,7 @@ __m64 _m_psrlqi_(__m64 a, int imm8)
 		FI
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
+		Skylake			1		1
 	*/
 	__m64 res;
 	if (imm8 > 63)
@@ -2237,8 +2523,8 @@ int _m_to_int_(__m64 a)
 		dst[31:0] := a[31:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake			-	1
-		Skylake			2	1
+		Icelake			-		1
+		Skylake			2		1
 	*/
 	int res = a.m64_i32[0];
 
@@ -2263,7 +2549,7 @@ __m128i _mm_cvtepi16_epi32_(__m128i a)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
+		Skylake			1		1
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -2287,10 +2573,10 @@ __m128i _mm_loadu_si128_(__m128i const* mem_addr)
 		dst[127:0] := MEM[mem_addr+127:mem_addr]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			6	0.5
-		Broadwell		1	0.33
-		Haswell			1	0.33
-		Ivy Bridge		1	0.5
+		Skylake			6		0.5
+		Broadwell		1		0.33
+		Haswell			1		0.33
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res = *mem_addr;
 
@@ -2300,21 +2586,21 @@ __m128i _mm_loadu_si128_(__m128i const* mem_addr)
 void _mm_storeu_si128_(__m128i* mem_addr, __m128i a)
 {
 	/*
-	Synopsis
-	void _mm_storeu_si128 (__m128i* mem_addr, __m128i a)
+	Synopsis:
+		void _mm_storeu_si128 (__m128i* mem_addr, __m128i a)
 		#include <emmintrin.h>
-		Instruction: movdqu m128, xmm
+	Instruction: movdqu m128, xmm
 	CPUID Flags: SSE2
-	Description
-	Store 128-bits of integer data from a into memory. mem_addr does not need to be aligned on any particular boundary.
-	Operation
+	Description:
+		Store 128-bits of integer data from a into memory. mem_addr does not need to be aligned on any particular boundary.
+	Operation:
 		MEM[mem_addr+127:mem_addr] := a[127:0]
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			5	1
-		Broadwell		1	0.33
-		Haswell			1	0.33
-		Ivy Bridge		1	0.5
+		Skylake			5		1
+		Broadwell		1		0.33
+		Haswell			1		0.33
+		Ivy Bridge		1		0.5
 	*/
 	*mem_addr = a;
 
@@ -2347,10 +2633,10 @@ __m128i _mm_shuffle_epi32_(__m128i a, int imm8)
 		dst[127:96] := SELECT4(a[127:0], imm8[7:6])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	1
-		Broadwell		1	1
-		Haswell			1	1
-		Ivy Bridge		1	0.5
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		0.5
 	*/
 	__m128i res;
 	for (int i=0; i <= 3; i++)
@@ -2372,7 +2658,7 @@ void _mm_empty_(void)
 		Empty the MMX state, which marks the x87 FPU registers as available for use by x87 instructions. This instruction must be used at the end of all MMX technology procedures.
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			10	4.5
+		Skylake			10		4.5
 	*/
 	;
 	return;
@@ -2394,7 +2680,7 @@ __m64 _mm_insert_pi16_(__m64 a, int i, int imm8)
 		dst[sel+15:sel] := i[15:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			2	2
+		Skylake			2		2
 	*/
 	__m64 res;
 	int64_t tmp;
@@ -2424,33 +2710,11 @@ __m128i _mm_insert_epi16_(__m128i a, int i, int imm8)
 		dst[sel+15:sel] := i[15:0]
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			2	2
+		Skylake			2		2
 	*/
 	__m128i res;
 	uint64_t tmp;
 	res = a;
-	//if (imm8 < 64)
-	//{
-	//	tmp = ~(0xffffffff << imm8);
-	//	res.m128i_i64[0] = res.m128i_i64[0] & tmp;
-	//	tmp = i << imm8;
-	//	res.m128i_i64[0] = res.m128i_i64[0] & tmp;
-	//	if (imm8 > 32){
-	//		int k = imm8 - 32;
-	//		tmp = ~((0xffffffff << k) >> 32);
-	//		res.m128i_i64[1] = res.m128i_i64[1] & tmp;
-	//		tmp = (i << k) >> 32;
-	//		res.m128i_i64[1] = res.m128i_i64[1] & tmp;
-	//	}
-	//}
-	//else
-	//{
-	//	int k = imm8 - 64;
-	//	tmp = ~(0xffffffff << k);
-	//	res.m128i_i64[1] = res.m128i_i64[1] & tmp;
-	//	tmp = i << k;
-	//	res.m128i_i64[1] = res.m128i_i64[1] & tmp;
-	//}
 	res.m128i_i16[imm8 & 3] = (int16_t) i;
 	return res;
 }
@@ -2470,9 +2734,8 @@ __m64 _mm_xor_si64_(__m64 a, __m64 b)
 		dst[63:0] := (a[63:0] XOR b[63:0])
 	Performance
 		Architecture	Latency	Throughput (CPI)
-		Icelake			1	0.5
-		Skylake			1	0.5
-
+		Icelake			1		0.5
+		Skylake			1		0.5
 	*/
 	__m64 res;
 	res.m64_i64 = a.m64_i64 ^ b.m64_i64;
@@ -2493,10 +2756,10 @@ __m128i _mm_xor_si128_(__m128i a, __m128i b)
 		dst[127:0] := (a[127:0] XOR b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake			1	0.33
-		Broadwell		1	0.33
-		Haswell			1	0.33
-		Ivy Bridge		1	0.33
+		Skylake			1		0.33
+		Broadwell		1		0.33
+		Haswell			1		0.33
+		Ivy Bridge		1		0.33
 	*/
 	__m128i res;
 	res.m128i_i64[0] = a.m128i_i64[0] ^ b.m128i_i64[0];
@@ -2582,24 +2845,24 @@ __m256i _mm256_xor_si256_(__m256i a, __m256i b)
 __m128i _mm_hadd_epi32_(__m128i a, __m128i b)
 {
 	/*
-	Synopsis
+	Synopsis:
 		__m128i _mm_hadd_epi32 (__m128i a, __m128i b)
 		#include <tmmintrin.h>
 	Instruction: phaddd xmm, xmm
 	CPUID Flags: SSSE3
-	Description
+	Description:
 		Horizontally add adjacent pairs of 32-bit integers in a and b, and pack the signed 32-bit results in dst.
-	Operation
+	Operation:
 		dst[31:0] := a[63:32] + a[31:0]
 		dst[63:32] := a[127:96] + a[95:64]
 		dst[95:64] := b[63:32] + b[31:0]
 		dst[127:96] := b[127:96] + b[95:64]
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake	3	2
-		Broadwell	3	2
-		Haswell	3	2
-		Ivy Bridge	3	1.5
+		Skylake			3		2
+		Broadwell		3		2
+		Haswell			3		2
+		Ivy Bridge		3		1.5
 	*/
 	__m128i res;
 	res.m128i_i32[0] = a.m128i_i32[1] + a.m128i_i32[0];
@@ -2612,18 +2875,18 @@ __m128i _mm_hadd_epi32_(__m128i a, __m128i b)
 __m64 _mm_movepi64_pi64_(__m128i a)
 {
 	/*
-	Synopsis
+	Synopsis:
 		__m64 _mm_movepi64_pi64 (__m128i a)
 		#include <emmintrin.h>
 	Instruction: movdq2q mm, xmm
 	CPUID Flags: SSE2
-	Description
+	Description:
 		Copy the lower 64-bit integer in a to dst.
-	Operation
+	Operation:
 		dst[63:0] := a[63:0]
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Skylake	2	1
+		Skylake			2		1
 	*/
 	__m64 res;
 	res.m64_i64 = a.m128i_i64[0];
@@ -2633,22 +2896,22 @@ __m64 _mm_movepi64_pi64_(__m128i a)
 __m64 _mm_packs_pi32_(__m64 a, __m64 b)
 {
 	/*	
-	Synopsis
+	Synopsis:
 		__m64 _mm_packs_pi32 (__m64 a, __m64 b)
 		#include <mmintrin.h>
 	Instruction: packssdw mm, mm
 	CPUID Flags: MMX
-	Description
+	Description:
 		Convert packed signed 32-bit integers from a and b to packed 16-bit integers using signed saturation, and store the results in dst.
-	Operation
+	Operation:
 		dst[15:0] := Saturate16(a[31:0])
 		dst[31:16] := Saturate16(a[63:32])
 		dst[47:32] := Saturate16(b[31:0])
 		dst[63:48] := Saturate16(b[63:32])
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake	-	2
-		Skylake	3	2
+		Icelake			-		2
+		Skylake			3		2
 	*/
 	__m64 res;
 	res.m64_i16[0] = Saturate16(a.m64_i32[0]);
@@ -2661,19 +2924,19 @@ __m64 _mm_packs_pi32_(__m64 a, __m64 b)
 int _mm_cvtsi64_si32_(__m64 a)
 {
 	/*
-	Synopsis
+	Synopsis:
 		int _mm_cvtsi64_si32 (__m64 a)
 		#include <mmintrin.h>
 	Instruction: movd r32, mm
 	CPUID Flags: MMX
-	Description
+	Description:
 		Copy the lower 32-bit integer in a to dst.
-	Operation
+	Operation:
 		dst[31:0] := a[31:0]
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake	-	1
-		Skylake	2	1
+		Icelake			-		1
+		Skylake			2		1
 	*/
 	int res;
 	res = a.m64_i32[0];
@@ -2697,10 +2960,6 @@ __m256i _mm256_insert_epi16_(__m256i a, __int16 i, const int index)
 	*/
 	__m256i res;
 	res = a;
-	//res.m256i_i64[0] = a.m256i_i64[0];
-	//res.m256i_i64[1] = a.m256i_i64[1];
-	//res.m256i_i64[2] = a.m256i_i64[2];
-	//res.m256i_i64[3] = a.m256i_i64[3];
 	res.m256i_i16[index] = i;
 	return res;
 }
@@ -2720,7 +2979,6 @@ __m128i _mm_max_epi16_(__m128i a, __m128i b)
 		i := j*16
 		dst[i+15:i] := MAX(a[i+15:i], b[i+15:i])
 		ENDFOR
-
 	Performance:
 		Architecture	Latency	Throughput (CPI)
 		Skylake			1		0.5
@@ -2887,9 +3145,9 @@ __m256i _mm256_hadds_epi16_(__m256i a, __m256i b)
 		#include <immintrin.h>
 	Instruction: vphaddsw ymm, ymm, ymm
 	CPUID Flags: AVX2
-	Description
+	Description:
 		Horizontally add adjacent pairs of signed 16-bit integers in a and b using saturation, and pack the signed 16-bit results in dst.
-	Operation
+	Operation:
 		dst[15:0] := Saturate16(a[31:16] + a[15:0])
 		dst[31:16] := Saturate16(a[63:48] + a[47:32])
 		dst[47:32] := Saturate16(a[95:80] + a[79:64])
@@ -2907,7 +3165,7 @@ __m256i _mm256_hadds_epi16_(__m256i a, __m256i b)
 		dst[239:224] := Saturate16(b[223:208] + b[207:192])
 		dst[255:240] := Saturate16(b[255:240] + b[239:224])
 		dst[MAX:256] := 0
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
 		Icelake			-		1
 		Skylake			3		2
@@ -2934,6 +3192,92 @@ __m256i _mm256_hadds_epi16_(__m256i a, __m256i b)
 	return res;
 }
 
+__m256i _mm256_packs_epi16_(__m256i a, __m256i b)
+{
+	/*
+	Synopsis:
+		__m256i _mm256_packs_epi16 (__m256i a, __m256i b)
+		#include <immintrin.h>
+	Instruction: vpacksswb ymm, ymm, ymm
+	CPUID Flags: AVX2
+	Description:
+		Convert packed signed 16-bit integers from a and b to packed 8-bit integers using signed saturation, and store the results in dst.
+	Operation:
+		dst[7:0] := Saturate8(a[15:0])
+		dst[15:8] := Saturate8(a[31:16])
+		dst[23:16] := Saturate8(a[47:32])
+		dst[31:24] := Saturate8(a[63:48])
+		dst[39:32] := Saturate8(a[79:64])
+		dst[47:40] := Saturate8(a[95:80])
+		dst[55:48] := Saturate8(a[111:96])
+		dst[63:56] := Saturate8(a[127:112])
+		dst[71:64] := Saturate8(b[15:0])
+		dst[79:72] := Saturate8(b[31:16])
+		dst[87:80] := Saturate8(b[47:32])
+		dst[95:88] := Saturate8(b[63:48])
+		dst[103:96] := Saturate8(b[79:64])
+		dst[111:104] := Saturate8(b[95:80])
+		dst[119:112] := Saturate8(b[111:96])
+		dst[127:120] := Saturate8(b[127:112])
+		dst[135:128] := Saturate8(a[143:128])
+		dst[143:136] := Saturate8(a[159:144])
+		dst[151:144] := Saturate8(a[175:160])
+		dst[159:152] := Saturate8(a[191:176])
+		dst[167:160] := Saturate8(a[207:192])
+		dst[175:168] := Saturate8(a[223:208])
+		dst[183:176] := Saturate8(a[239:224])
+		dst[191:184] := Saturate8(a[255:240])
+		dst[199:192] := Saturate8(b[143:128])
+		dst[207:200] := Saturate8(b[159:144])
+		dst[215:208] := Saturate8(b[175:160])
+		dst[223:216] := Saturate8(b[191:176])
+		dst[231:224] := Saturate8(b[207:192])
+		dst[239:232] := Saturate8(b[223:208])
+		dst[247:240] := Saturate8(b[239:224])
+		dst[255:248] := Saturate8(b[255:240])
+		dst[MAX:256] := 0
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Icelake			3		1
+		Skylake			1		1
+		Broadwell		1		1
+		Haswell			1		1
+	*/
+	__m256i res;
+	res.m256i_i8[0] = Saturate8(a.m256i_i16[0]);
+	res.m256i_i8[1] = Saturate8(a.m256i_i16[1]);
+	res.m256i_i8[2] = Saturate8(a.m256i_i16[2]);
+	res.m256i_i8[3] = Saturate8(a.m256i_i16[3]);
+	res.m256i_i8[4] = Saturate8(a.m256i_i16[4]);
+	res.m256i_i8[5] = Saturate8(a.m256i_i16[5]);
+	res.m256i_i8[6] = Saturate8(a.m256i_i16[6]);
+	res.m256i_i8[7] = Saturate8(a.m256i_i16[7]);
+	res.m256i_i8[8] = Saturate8(b.m256i_i16[0]);
+	res.m256i_i8[9] = Saturate8(b.m256i_i16[1]);
+	res.m256i_i8[10] = Saturate8(b.m256i_i16[2]);
+	res.m256i_i8[11] = Saturate8(b.m256i_i16[3]);
+	res.m256i_i8[12] = Saturate8(b.m256i_i16[4]);
+	res.m256i_i8[13] = Saturate8(b.m256i_i16[5]);
+	res.m256i_i8[14] = Saturate8(b.m256i_i16[6]);
+	res.m256i_i8[15] = Saturate8(b.m256i_i16[7]);
+	res.m256i_i8[16] = Saturate8(a.m256i_i16[8]);
+	res.m256i_i8[17] = Saturate8(a.m256i_i16[9]);
+	res.m256i_i8[18] = Saturate8(a.m256i_i16[10]);
+	res.m256i_i8[19] = Saturate8(a.m256i_i16[11]);
+	res.m256i_i8[20] = Saturate8(a.m256i_i16[12]);
+	res.m256i_i8[21] = Saturate8(a.m256i_i16[13]);
+	res.m256i_i8[22] = Saturate8(a.m256i_i16[14]);
+	res.m256i_i8[23] = Saturate8(a.m256i_i16[15]);
+	res.m256i_i8[24] = Saturate8(b.m256i_i16[8]);
+	res.m256i_i8[25] = Saturate8(b.m256i_i16[9]);
+	res.m256i_i8[26] = Saturate8(b.m256i_i16[10]);
+	res.m256i_i8[27] = Saturate8(b.m256i_i16[11]);
+	res.m256i_i8[28] = Saturate8(b.m256i_i16[12]);
+	res.m256i_i8[29] = Saturate8(b.m256i_i16[13]);
+	res.m256i_i8[30] = Saturate8(b.m256i_i16[14]);
+	res.m256i_i8[31] = Saturate8(b.m256i_i16[15]);	
+	return res;
+}
 __m64 _mm_mullo_pi16_(__m64 a, __m64 b)
 {
 	/*
@@ -2952,8 +3296,8 @@ __m64 _mm_mullo_pi16_(__m64 a, __m64 b)
 		ENDFOR
 	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake	-	1
-		Skylake	5	1
+		Icelake			-		1
+		Skylake			5		1
 	*/
 	__m64 res;
 	int32_t tmp; 
@@ -3063,20 +3407,20 @@ __m64 _mm_hadds_pi16_(__m64 a, __m64 b)
 		#include <tmmintrin.h>
 	Instruction: phaddsw mm, mm
 	CPUID Flags: SSSE3
-	Description
+	Description:
 		Horizontally add adjacent pairs of signed 16-bit integers in a and b using saturation, and pack the signed 16-bit results in dst.
-	Operation
+	Operation:
 		dst[15:0] := Saturate16(a[31:16] + a[15:0])
 		dst[31:16] := Saturate16(a[63:48] + a[47:32])
 		dst[47:32] := Saturate16(b[31:16] + b[15:0])
 		dst[63:48] := Saturate16(b[63:48] + b[47:32])
-	Performance
+	Performance:
 		Architecture	Latency	Throughput (CPI)
-		Icelake	3	2
-		Skylake	3	2
-		Broadwell	3	2
-		Haswell	3	2
-		Ivy Bridge	3	1.5
+		Icelake			3		2
+		Skylake			3		2
+		Broadwell		3		2
+		Haswell			3		2
+		Ivy Bridge		3		1.5
 	*/
 	__m64 res;
 	res.m64_i16[0] = Saturate16(a.m64_i16[1] + a.m64_i16[0]);

@@ -349,6 +349,16 @@ __m256i _mm256_adds_epi16_(__m256i a, __m256i b);
 __m256i _mm256_subs_epi16_(__m256i a, __m256i b);
 __m256i _mm256_mullo_epi16_(__m256i a, __m256i b);
 __m256i _mm256_hadds_epi16_(__m256i a, __m256i b);
+__m256i _mm256_abs_epi8_(__m256i a);
+__m256i _mm256_sign_epi8_(__m256i a, __m256i b);
+__m256i _mm256_min_epu8_(__m256i a, __m256i b);
+__m256i _mm256_adds_epi8_(__m256i a, __m256i b);
+int _mm256_movemask_epi8_(__m256i a);
+__m256i _mm256_cvtepi8_epi16_(__m128i a);
+__m256i _mm256_packs_epi16_(__m256i a, __m256i b);
+__m256i _mm256_permute4x64_epi64_(__m256i a, const int imm8);
+__m256i _mm256_subs_epi8_(__m256i a, __m256i b);
+__m256i _mm256_cmpgt_epi8_(__m256i a, __m256i b);
 
 #define _mm256_xor_si256 _mm256_xor_si256_
 #define _mm256_setzero_si256 _mm256_setzero_si256_
@@ -365,6 +375,17 @@ __m256i _mm256_hadds_epi16_(__m256i a, __m256i b);
 #define _mm256_mullo_epi16 _mm256_mullo_epi16_
 #define _mm256_subs_epi16 _mm256_subs_epi16_
 #define _mm256_hadds_epi16 _mm256_hadds_epi16_
+#define _mm256_abs_epi8 _mm256_abs_epi8_
+#define _mm256_sign_epi8 _mm256_sign_epi8_
+#define _mm256_min_epu8 _mm256_min_epu8_
+#define _mm256_adds_epi8 _mm256_adds_epi8_
+#define _mm256_movemask_epi8 _mm256_movemask_epi8_
+#define _mm256_cvtepi8_epi16 _mm256_cvtepi8_epi16_
+#define _mm256_packs_epi16 _mm256_packs_epi16_
+#define _mm256_permute4x64_epi64 _mm256_permute4x64_epi64_
+#define _mm256_subs_epi8 _mm256_subs_epi8_
+#define _mm256_cmpgt_epi8 _mm256_cmpgt_epi8_
+
 
 #endif
 
