@@ -38,6 +38,12 @@ int16_t ZeroExtend16(int16_t a)
 	return a;
 }
 
+int32_t ZeroExtend32(int32_t a)
+{
+	//return a & 0x7fff; //checkit ZeroExtend16 
+	return a;
+}
+
 int64_t ZeroExtend64(int64_t a)
 {
 	//return a & 0x7fffffffffffffff; //checkit ZeroExtend64 
@@ -188,6 +194,43 @@ __m128i _mm_slli_epi16_(__m128i a, int imm8){
 			res.m128i_i16[i] = 0;
 		else 
 			res.m128i_i16[i] = ZeroExtend16(a.m128i_i16[i] << imm8); 
+	}
+	return res;
+}
+
+__m128i _mm_slli_epi32_(__m128i a, int imm8)
+{
+	/*
+	Synopsis:
+		__m128i _mm_slli_epi32 (__m128i a, int imm8)
+		#include <emmintrin.h>
+	Instruction: pslld xmm, imm8
+	CPUID Flags: SSE2
+	Description:
+		Shift packed 32-bit integers in a left by imm8 while shifting in zeros, and store the results in dst.
+	Operation:
+		FOR j := 0 to 3
+			i := j*32
+			IF imm8[7:0] > 31
+				dst[i+31:i] := 0
+			ELSE
+				dst[i+31:i] := ZeroExtend32(a[i+31:i] << imm8[7:0])
+			FI
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.5
+		Broadwell		1		1
+		Haswell			1		1
+		Ivy Bridge		1		1
+	*/
+	__m128i res;
+	for (int i = 0; i <= 3; i++)
+	{
+		if (imm8 > 31)
+			res.m128i_i32[i] = 0;
+		else
+			res.m128i_i32[i] = ZeroExtend32(a.m128i_i16[i] << imm8);
 	}
 	return res;
 }
@@ -978,32 +1021,29 @@ __m128i _mm_adds_epi16_(__m128i a, __m128i b){
 	return res;
 }
 
-__m128i _mm_add_epi16_(__m128i a, __m128i b)
+__m128i _mm_and_si128_(__m128i a, __m128i b)
 {
 	/*
 	Synopsis:
-		__m128i _mm_add_epi16 (__m128i a, __m128i b)
+		__m128i _mm_and_si128 (__m128i a, __m128i b)
 		#include <emmintrin.h>
-	Instruction: paddw xmm, xmm
+	Instruction: pand xmm, xmm
 	CPUID Flags: SSE2
 	Description:
-		Add packed 16-bit integers in a and b, and store the results in dst.
+		Compute the bitwise AND of 128 bits (representing integer data) in a and b, and store the result in dst.
 	Operation:
-		FOR j := 0 to 7
-			i := j*16
-			dst[i+15:i] := a[i+15:i] + b[i+15:i]
-		ENDFOR
+		dst[127:0] := (a[127:0] AND b[127:0])
 	Performance:
 		Architecture	Latency	Throughput (CPI)
 		Skylake			1		0.33
-		Broadwell		1		0.5
-		Haswell			1		0.5
-		Ivy Bridge		1		0.5
+		Broadwell		1		0.33
+		Haswell			1		0.33
+		Ivy Bridge		1		0.33
 	*/
 	__m128i res;
-	for (int i=0; i <= 7; i++)
+	for (int i=0; i <= 2; i++)
 	{
-		res.m128i_i16[i] = a.m128i_i16[i] + b.m128i_i16[i];
+		res.m128i_i64[i] = a.m128i_i64[i] & b.m128i_i64[i];
 	}
 	return res;
 }
@@ -1296,6 +1336,92 @@ __m128i _mm_add_epi32_(__m128i a, __m128i b){
 	return res;
 }
 
+__m128i _mm_add_epi64_(__m128i a, __m128i b)
+{
+	/*
+	Synopsis:
+		__m128i _mm_add_epi64 (__m128i a, __m128i b)
+		#include <emmintrin.h>
+	Instruction: paddq xmm, xmm
+	CPUID Flags: SSE2
+	Description:
+		Add packed 64-bit integers in a and b, and store the results in dst.
+	Operation:
+		FOR j := 0 to 1
+			i := j*64
+			dst[i+63:i] := a[i+63:i] + b[i+63:i]
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
+	*/
+	__m128i res;
+	for (int i = 0; i <= 2; i++)
+	{
+		res.m128i_i64[i] = a.m128i_i64[i] + b.m128i_i64[i];
+	}
+	return res;
+}
+
+__m128i _mm_sub_epi64_(__m128i a, __m128i b)
+{
+	/*
+	Synopsis:
+		__m128i _mm_sub_epi64 (__m128i a, __m128i b)
+		#include <emmintrin.h>
+	Instruction: psubq xmm, xmm
+	CPUID Flags: SSE2
+	Description:
+		Subtract packed 64-bit integers in b from packed 64-bit integers in a, and store the results in dst.
+	Operation:
+		FOR j := 0 to 1
+			i := j*64
+			dst[i+63:i] := a[i+63:i] - b[i+63:i]
+		ENDFOR
+	Performance:
+	Architecture	Latency	Throughput (CPI)
+	Skylake			1		0.33
+	*/
+	__m128i res;
+	for (int i = 0; i <= 2; i++)
+	{
+		res.m128i_i64[i] = a.m128i_i64[i] - b.m128i_i64[i];
+	}
+	return res;
+}
+
+__m128i _mm_add_epi16_(__m128i a, __m128i b){
+	/*
+	Synopsis:
+		__m128i _mm_add_epi16 (__m128i a, __m128i b)
+		#include <emmintrin.h>
+	Instruction: paddw xmm, xmm
+	CPUID Flags: SSE2
+	Description:
+		Add packed 16-bit integers in a and b, and store the results in dst.
+	Operation:
+		FOR j := 0 to 7
+			i := j*16
+			dst[i+15:i] := a[i+15:i] + b[i+15:i]
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.33
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
+	*/
+	__m128i res;
+	for (int i = 0; i <= 7; i++)
+	{
+		res.m128i_i16[i] = a.m128i_i16[i] + b.m128i_i16[i];
+	}
+	return res;
+}
+
 __m128i _mm_unpacklo_epi32_(__m128i a, __m128i b){
 	/*
 	Synopsis:
@@ -1393,6 +1519,36 @@ __m128i _mm_sub_epi32_(__m128i a, __m128i b){
 	for (int i=0; i <= 3; i++)
 	{
 		res.m128i_i32[i] = a.m128i_i32[i] - b.m128i_i32[i];
+	}
+	return res;
+}
+
+__m128i _mm_abs_epi32_(__m128i a)
+{
+	/*
+	Synopsis:
+		__m128i _mm_abs_epi32 (__m128i a)
+		#include <tmmintrin.h>
+	Instruction: pabsd xmm, xmm
+	CPUID Flags: SSSE3
+	Description:
+		Compute the absolute value of packed signed 32-bit integers in a, and store the unsigned results in dst.
+	Operation:
+		FOR j := 0 to 3
+			i := j*32
+			dst[i+31:i] := ABS(a[i+31:i])
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
+	*/
+	__m128i res;
+	for (int i = 0; i <= 3; i++)
+	{
+		res.m128i_i32[i] = abs(a.m128i_i32[i]);
 	}
 	return res;
 }
@@ -2061,6 +2217,66 @@ __m128i _mm_cmpeq_epi16_(__m128i a, __m128i b)
 	for (int i=0; i <= 7; i++)
 	{
 		res.m128i_i16[i] = (a.m128i_i16[i] == b.m128i_i16[i]) ? 0xffff : 0;
+	}
+	return res;
+}
+
+__m128i _mm_cmplt_epi16_(__m128i a, __m128i b)
+{
+	/*
+	Synopsis:
+		__m128i _mm_cmplt_epi16 (__m128i a, __m128i b)
+		#include <emmintrin.h>
+	Instruction: pcmpgtw xmm, xmm
+	CPUID Flags: SSE2
+	Description:
+		Compare packed signed 16-bit integers in a and b for less-than, and store the results in dst. Note: This intrinsic emits the pcmpgtw instruction with the order of the operands switched.
+	Operation:
+		FOR j := 0 to 7
+			i := j*16
+			dst[i+15:i] := ( a[i+15:i] < b[i+15:i] ) ? 0xFFFF : 0
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
+	*/
+	__m128i res;
+	for (int i = 0; i <= 7; i++)
+	{
+		res.m128i_i16[i] = (a.m128i_i16[i] < b.m128i_i16[i]) ? 0xffff : 0;
+	}
+	return res;
+}
+
+__m128i _mm_cmpgt_epi16_(__m128i a, __m128i b)
+{
+	/*
+	Synopsis:
+		__m128i _mm_cmpgt_epi16 (__m128i a, __m128i b)
+		#include <emmintrin.h>
+	Instruction: pcmpgtw xmm, xmm
+	CPUID Flags: SSE2
+	Description:
+		Compare packed signed 16-bit integers in a and b for greater-than, and store the results in dst.
+	Operation:
+		FOR j := 0 to 7
+			i := j*16
+			dst[i+15:i] := ( a[i+15:i] > b[i+15:i] ) ? 0xFFFF : 0
+		ENDFOR
+	Performance:
+		Architecture	Latency	Throughput (CPI)
+		Skylake			1		0.5
+		Broadwell		1		0.5
+		Haswell			1		0.5
+		Ivy Bridge		1		0.5
+	*/
+	__m128i res;
+	for (int i = 0; i <= 7; i++)
+	{
+		res.m128i_i16[i] = (a.m128i_i16[i] > b.m128i_i16[i]) ? 0xffff : 0;
 	}
 	return res;
 }

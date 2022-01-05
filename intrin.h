@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "unistd.h"
+#include "types.h"
 
 #define _MM_SHUFFLE2(x,y) (((x)<<1) | (y))
 #define _MM_SHUFFLE(fp3,fp2,fp1,fp0) (((fp3) << 6) | ((fp2) << 4) | \
@@ -254,6 +255,13 @@ __m128i _mm_xor_si128_(__m128i a, __m128i b);
 __m64 _mm_movepi64_pi64_(__m128i a);
 __m128i _mm_max_epi16_(__m128i a, __m128i b);
 __m128i _mm_min_epi16_(__m128i a, __m128i b);
+__m128i _mm_abs_epi32_(__m128i a);
+__m128i _mm_slli_epi32_(__m128i a, int imm8);
+__m128i _mm_and_si128_(__m128i a, __m128i b);
+__m128i _mm_cmplt_epi16_(__m128i a, __m128i b);
+__m128i _mm_cmpgt_epi16_(__m128i a, __m128i b);
+__m128i _mm_add_epi64_(__m128i a, __m128i b);
+__m128i _mm_sub_epi64_(__m128i a, __m128i b);
 void _mm_empty_(void);
 
 #define _mm_add_epi16 _mm_add_epi16_
@@ -299,6 +307,13 @@ void _mm_empty_(void);
 #define _mm_max_epi16 _mm_max_epi16_
 #define _mm_or_si128 _mm_or_si128_
 #define _mm_min_epi16 _mm_min_epi16_
+#define _mm_abs_epi32 _mm_abs_epi32_
+#define _mm_slli_epi32 _mm_slli_epi32_
+#define _mm_and_si128 _mm_and_si128_
+#define _mm_cmplt_epi16 _mm_cmplt_epi16_
+#define _mm_cmpgt_epi16 _mm_cmpgt_epi16_
+#define _mm_add_epi64 _mm_add_epi64_
+#define _mm_sub_epi64 _mm_sub_epi64_
 #define _mm_empty _mm_empty_
 
 //SSSE3
