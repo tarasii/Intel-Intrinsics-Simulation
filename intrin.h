@@ -315,6 +315,7 @@ void _mm_empty_(void);
 #define _mm_add_epi64 _mm_add_epi64_
 #define _mm_sub_epi64 _mm_sub_epi64_
 #define _mm_empty _mm_empty_
+#define _m_empty _mm_empty_
 
 //SSSE3
 __m128i _mm_sign_epi16_(__m128i a, __m128i b);

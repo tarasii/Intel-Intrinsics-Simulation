@@ -1,8 +1,6 @@
 
 #include <stdlib.h>
 #include "intrin.h"
-//#include <immintrin.h>
-//#include <mmintrin.h>
 
 int8_t Saturate8(int16_t a)
 {
@@ -1645,7 +1643,7 @@ __m128i _mm_shuffle_epi8_(__m128i a, __m128i b)
 			res.m128i_i8[i] = 0;
 		else
 		{
-			int index = b.m128i_i8[i] & 0x7; //chekit
+			int index = b.m128i_i8[i] & 0xf;
 			res.m128i_i8[i] = a.m128i_i8[index];
 		}
 	}
@@ -2182,7 +2180,6 @@ __m128 _mm_dp_ps(__m128 a, __m128 b, const int imm8)
 	float sum = (tmp.m128_f32[3] + tmp.m128_f32[2]) + (tmp.m128_f32[1] + tmp.m128_f32[0]);
 	for (int i=0; i <= 3; i++)
 	{
-		__m128 tmp;
 		if ((imm8 >> (i)) & 0x1)
 			res.m128_f32[i] = sum;
 		else
@@ -2899,12 +2896,7 @@ __m64 _mm_insert_pi16_(__m64 a, int i, int imm8)
 		Skylake			2		2
 	*/
 	__m64 res;
-	int64_t tmp;
 	res = a;
-	//tmp = ~(0xffffffff << imm8);
-	//res.m64_i64 = res.m64_i64 & tmp;
-	//tmp = i << imm8;
-	//res.m64_i64 = res.m64_i64 & tmp;
 	res.m64_i16[imm8 & 3] = (int16_t)i;
 
 	return res;
@@ -2929,9 +2921,8 @@ __m128i _mm_insert_epi16_(__m128i a, int i, int imm8)
 		Skylake			2		2
 	*/
 	__m128i res;
-	uint64_t tmp;
 	res = a;
-	res.m128i_i16[imm8 & 3] = (int16_t) i;
+	res.m128i_i16[imm8 & 7] = (int16_t) i;
 	return res;
 }
 
